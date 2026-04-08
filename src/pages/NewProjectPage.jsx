@@ -1,145 +1,123 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
-import { db } from '../firebase/config'
-import { useAuth } from '../context/AuthContext'
-import Navbar from '../components/shared/Navbar'
-import { STAGES, SUPPORT_OPTIONS } from '../utils/stageHelpers'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { db } from "../firebase/config";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
+import Navbar from "../components/shared/Navbar";
+import { STAGES, SUPPORT_OPTIONS } from "../utils/stageHelpers";
 
 export default function NewProjectPage() {
-    const { currentUser, userProfile } = useAuth()
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const { currentUser } = useAuth();
 
-    const [form, setForm] = useState({
-        name: '',
-        description: '',
-        stage: 'idea',
-        techStack: '',
-        supportNeeded: [],
-        repoUrl: '',
-    })
-    const [errors, setErrors] = useState({})
-    const [loading, setLoading] = useState(false)
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [stage, setStage] = useState("idea");
+    const [techStack, setTechStack] = useState("");
+    const [supportNeeded, setSupportNeeded] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    const validate = () => {
-        const e = {}
-        if (!form.name.trim()) e.name = 'Project name is required'
-        if (form.name.length > 100) e.name = 'Max 100 characters'
-        if (!form.description.trim()) e.description = 'Description is required'
-        if (form.description.length > 500) e.description = 'Max 500 characters'
-        return e
-    }
-
-    const handleSupport = (option) => {
-        setForm(prev => ({
-            ...prev,
-            supportNeeded: prev.supportNeeded.includes(option)
-                ? prev.supportNeeded.filter(s => s !== option)
-                : [...prev.supportNeeded, option],
-        }))
-    }
+    const handleSupportToggle = (option) => {
+        setSupportNeeded((prev) =>
+            prev.includes(option)
+                ? prev.filter((item) => item !== option)
+                : [...prev, option]
+        );
+    };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        const errs = validate()
-        if (Object.keys(errs).length) return setErrors(errs)
+        e.preventDefault();
 
-        setLoading(true)
+        if (!name.trim()) return alert("Project name is required");
+
+        setLoading(true);
+
         try {
-            await addDoc(collection(db, 'projects'), {
-                name: form.name.trim(),
-                description: form.description.trim(),
-                stage: form.stage,
-                techStack: form.techStack.split(',').map(t => t.trim()).filter(Boolean),
-                supportNeeded: form.supportNeeded,
-                repoUrl: form.repoUrl.trim(),
+            await addDoc(collection(db, "projects"), {
+                name,
+                description,
+                stage,
+                techStack: techStack.split(",").map((t) => t.trim()).filter(Boolean),
+                supportNeeded,
                 ownerId: currentUser.uid,
-                ownerName: userProfile?.displayName || currentUser.email.split('@')[0],
-                ownerAvatar: userProfile?.avatarUrl || '',
-                commentCount: 0,
-                isComplete: false,
+                ownerName: currentUser.email, // you can improve later
                 createdAt: serverTimestamp(),
                 updatedAt: serverTimestamp(),
-            })
-            navigate('/feed')
+                isComplete: false,
+                commentCount: 0,
+            });
+
+            navigate("/feed"); // redirect after creation
         } catch (err) {
-            console.error(err)
-            setErrors({ submit: 'Failed to create project. Please try again.' })
-        } finally {
-            setLoading(false)
+            console.error(err);
+            alert("Failed to create project");
         }
-    }
+
+        setLoading(false);
+    };
 
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
-            <div className="max-w-xl mx-auto px-4 py-10">
 
-                <div className="mb-8">
-                    <h1 className="text-2xl font-bold text-gray-900">Start a new project</h1>
-                    <p className="text-sm text-gray-500 mt-1">Share what you're building with the community</p>
-                </div>
+            <div className="max-w-xl mx-auto p-6 mt-8 bg-white rounded shadow">
+                <h2 className="text-2xl font-bold mb-6">Create New Project</h2>
 
-                <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
+                    {/* Project Name */}
+                    <input
+                        type="text"
+                        placeholder="Project name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="p-2 border rounded"
+                        required
+                    />
+
+                    {/* Description */}
+                    <textarea
+                        placeholder="Describe your project..."
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="p-2 border rounded"
+                        rows={4}
+                    />
+
+                    {/* Stage */}
+                    <select
+                        value={stage}
+                        onChange={(e) => setStage(e.target.value)}
+                        className="p-2 border rounded"
+                    >
+                        {STAGES.map((s) => (
+                            <option key={s.value} value={s.value}>
+                                {s.label}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* Tech Stack */}
+                    <input
+                        type="text"
+                        placeholder="Tech stack (comma separated e.g React, Firebase)"
+                        value={techStack}
+                        onChange={(e) => setTechStack(e.target.value)}
+                        className="p-2 border rounded"
+                    />
+
+                    {/* Support Needed */}
                     <div>
-                        <label className="label">Project name *</label>
-                        <input
-                            className={`input ${errors.name ? 'border-red-400 focus:ring-red-400' : ''}`}
-                            placeholder="e.g. MzansiBuilds"
-                            value={form.name}
-                            onChange={e => setForm({ ...form, name: e.target.value })}
-                        />
-                        {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-                    </div>
-
-                    <div>
-                        <label className="label">Description *</label>
-                        <textarea
-                            className={`input resize-none h-24 ${errors.description ? 'border-red-400 focus:ring-red-400' : ''}`}
-                            placeholder="What are you building and why?"
-                            value={form.description}
-                            onChange={e => setForm({ ...form, description: e.target.value })}
-                        />
-                        <p className="text-xs text-gray-400 mt-1">{form.description.length}/500</p>
-                        {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
-                    </div>
-
-                    <div>
-                        <label className="label">Current stage *</label>
-                        <select
-                            className="input"
-                            value={form.stage}
-                            onChange={e => setForm({ ...form, stage: e.target.value })}
-                        >
-                            {STAGES.map(s => (
-                                <option key={s.value} value={s.value}>{s.label}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="label">Tech stack</label>
-                        <input
-                            className="input"
-                            placeholder="React, Firebase, Tailwind (comma separated)"
-                            value={form.techStack}
-                            onChange={e => setForm({ ...form, techStack: e.target.value })}
-                        />
-                        <p className="text-xs text-gray-400 mt-1">Separate each technology with a comma</p>
-                    </div>
-
-                    <div>
-                        <label className="label">Support needed</label>
-                        <div className="flex flex-wrap gap-2 mt-1">
-                            {SUPPORT_OPTIONS.map(option => (
+                        <p className="text-sm font-medium mb-2">Support Needed:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {SUPPORT_OPTIONS.map((option) => (
                                 <button
-                                    key={option}
                                     type="button"
-                                    onClick={() => handleSupport(option)}
-                                    className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${form.supportNeeded.includes(option)
-                                        ? 'bg-primary-700 text-white border-primary-700'
-                                        : 'bg-white text-gray-600 border-gray-200 hover:border-primary-400'
+                                    key={option}
+                                    onClick={() => handleSupportToggle(option)}
+                                    className={`text-xs px-3 py-1 rounded-full border ${supportNeeded.includes(option)
+                                        ? "bg-green-600 text-white"
+                                        : "bg-gray-100"
                                         }`}
                                 >
                                     {option}
@@ -148,35 +126,16 @@ export default function NewProjectPage() {
                         </div>
                     </div>
 
-                    <div>
-                        <label className="label">GitHub repo URL</label>
-                        <input
-                            className="input"
-                            placeholder="https://github.com/username/repo"
-                            value={form.repoUrl}
-                            onChange={e => setForm({ ...form, repoUrl: e.target.value })}
-                        />
-                    </div>
-
-                    {errors.submit && (
-                        <p className="text-red-500 text-sm">{errors.submit}</p>
-                    )}
-
-                    <div className="flex gap-3 pt-2">
-                        <button type="submit" disabled={loading} className="btn-primary flex-1">
-                            {loading ? 'Creating...' : 'Create project'}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => navigate('/feed')}
-                            className="btn-secondary flex-1"
-                        >
-                            Cancel
-                        </button>
-                    </div>
-
+                    {/* Submit */}
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="bg-green-600 text-white p-2 rounded hover:bg-green-700"
+                    >
+                        {loading ? "Creating..." : "Create Project"}
+                    </button>
                 </form>
             </div>
         </div>
-    )
+    );
 }
