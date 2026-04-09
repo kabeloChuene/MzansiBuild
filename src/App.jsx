@@ -5,6 +5,8 @@ import Login from "./pages/Login";
 import SignupPage from "./pages/SignupPage";
 import Feed from "./pages/Feed";
 import NewProjectPage from "./pages/NewProjectPage";
+import ProjectDetail from './pages/ProjectDetail'
+import EditProjectPage from './pages/EditProjectPage';
 
 export default function App() {
   return (
@@ -29,6 +31,26 @@ export default function App() {
           element={
             <ProtectedRoute>
               <NewProjectPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Edit Project Route - MUST come BEFORE the detail route */}
+        <Route
+          path="/projects/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditProjectPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Project Detail Route - Protected (only logged-in users) */}
+        <Route
+          path="/projects/:id"
+          element={
+            <ProtectedRoute>
+              <ProjectDetail />
             </ProtectedRoute>
           }
         />

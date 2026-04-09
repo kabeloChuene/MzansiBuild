@@ -1,4 +1,4 @@
-console.log('ProjectCard.jsx file is loading');
+// console.log('ProjectCard.jsx file is loading');
 import { Link } from 'react-router-dom'
 import { MessageCircle, Hand } from 'lucide-react'
 import { getStageBadgeClass } from '../../utils/stageHelpers'
@@ -31,7 +31,7 @@ export default function ProjectCard({ project }) {
             {/* Project name and description */}
             <div>
                 <Link to={`/projects/${project.id}`}>
-                    <h3 className="font-semibold text-gray-900 hover:text-primary-700 transition-colors">
+                    <h3 className="font-semibold text-gray-900 hover:text-primary-700 transition-colors cursor-pointer">
                         {project.name}
                     </h3>
                 </Link>
@@ -88,4 +88,4 @@ export default function ProjectCard({ project }) {
     )
 }
 
-console.log('ProjectCard.jsx exports loaded');
+// console.log('ProjectCard.jsx exports loaded');
