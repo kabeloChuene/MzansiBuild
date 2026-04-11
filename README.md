@@ -1,8 +1,21 @@
-# React + Vite
+# MzansiBuilds 🚀
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A platform for developers to build in public, share progress, and collaborate with other developers.
 
-Currently, two official plugins are available:
+## 📋 System Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Frontend
+- Node.js (v18 or higher)
+- npm or yarn package manager
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+
+### Backend Services
+- Firebase Account (free tier)
+- Firestore Database
+- Firebase Authentication
+
+### Development Tools
+- Git & GitHub Desktop
+- VS Code (recommended) or any code editor
+
+## 🏗️ Architecture
