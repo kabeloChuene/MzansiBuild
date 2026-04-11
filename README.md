@@ -9,7 +9,7 @@
 
 ## 🚀 Deployment Model
 
-**Platform:** Vercel / Netlify (recommended)
+**Platform:** Vercel 
 
 **Deployment Steps:**
 1. Push code to GitHub repository
