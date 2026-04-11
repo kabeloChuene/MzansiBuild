@@ -1,8 +1,53 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Data Flow
+1. User interacts with React frontend
+2. Firebase Authentication handles user login/signup
+3. Firestore stores all project, comment, and milestone data
+4. Real-time listeners update UI automatically when data changes
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Deployment Model
+
+**Platform:** Vercel 
+
+**Deployment Steps:**
+1. Push code to GitHub repository
+2. Connect GitHub repo to Vercel/Netlify
+3. Configure environment variables (see below)
+4. Deploy automatically on push to main branch
+
+**Build Settings:**
+- Build command: `npm run build`
+- Output directory: `dist`
+- Node version: 18.x
+
+---
+
+## 🎨 Tech Stack
+
+| Category | Technology |
+|----------|------------|
+| Frontend | React 18 + Vite |
+| Styling | Tailwind CSS |
+| Backend | Firebase (Auth, Firestore) |
+| Routing | React Router DOM |
+| Icons | Lucide React |
+| Version Control | Git + GitHub |
+| Deployment | Vercel/Netlify |
+
+---
+
+## 🛠️ Setup Instructions
+
+### Prerequisites
+- Node.js 18+ installed
+- Firebase account
+- Git installed (or GitHub Desktop)
+
+### Step 1: Clone the repository
+
+**Using Git command line:**
+```bash
+git clone https://github.com/kabeloChuene/MzansiBuild.git
+cd MzansiBuild
