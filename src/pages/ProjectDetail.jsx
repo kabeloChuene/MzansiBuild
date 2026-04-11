@@ -5,7 +5,8 @@ import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firest
 import { db } from '../firebase/config'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/shared/Navbar'
-import CommentSection from '../components/comments/CommentSection'  // ✅ Add this import
+import CommentSection from '../components/comments/CommentSection'
+import Milestones from '../components/milestones/Milestones'  // ✅ Add this
 import { MessageCircle, Hand, ArrowLeft, Edit, Users } from 'lucide-react'
 import { getStageBadgeClass } from '../utils/stageHelpers'
 import { formatRelativeTime } from '../utils/formatRelativeTime'
@@ -133,7 +134,7 @@ export default function ProjectDetail() {
                     <div className="p-6 border-b border-gray-200">
                         <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-full bg-primary-700 flex items-center justify-center text-white text-lg font-bold">
+                                <div className="w-12 h-12 rounded-full bg-green-700 flex items-center justify-center text-white text-lg font-bold">
                                     {project.ownerName?.charAt(0).toUpperCase() || '?'}
                                 </div>
                                 <div>
@@ -172,7 +173,7 @@ export default function ProjectDetail() {
                                     <h3 className="text-sm font-semibold text-gray-700 mb-2">Support Needed</h3>
                                     <div className="flex flex-wrap gap-2">
                                         {project.supportNeeded.map(s => (
-                                            <span key={s} className="text-sm bg-primary-50 text-primary-700 border border-primary-200 px-3 py-1 rounded-full">
+                                            <span key={s} className="text-sm bg-green-50 text-green-700 border border-green-200 px-3 py-1 rounded-full">
                                                 {s}
                                             </span>
                                         ))}
@@ -212,7 +213,7 @@ export default function ProjectDetail() {
                                     disabled={raisingHand}
                                     className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${hasRaisedHand
                                         ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                        : 'bg-primary-600 text-white hover:bg-primary-700'
+                                        : 'bg-green-600 text-white hover:bg-green-700'
                                         }`}
                                 >
                                     <Hand size={16} />
@@ -223,7 +224,12 @@ export default function ProjectDetail() {
                     </div>
                 </div>
 
-                {/* ✅ Comments Section - Now integrated */}
+                {/* ✅ Milestones Section */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
+                    <Milestones projectId={project.id} isOwner={isOwner} />
+                </div>
+
+                {/* Comments Section */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">Comments</h2>
                     <CommentSection projectId={project.id} />

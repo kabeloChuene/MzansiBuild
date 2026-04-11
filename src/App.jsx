@@ -5,8 +5,9 @@ import Login from "./pages/Login";
 import SignupPage from "./pages/SignupPage";
 import Feed from "./pages/Feed";
 import NewProjectPage from "./pages/NewProjectPage";
-import ProjectDetail from './pages/ProjectDetail'
+import ProjectDetail from './pages/ProjectDetail';
 import EditProjectPage from './pages/EditProjectPage';
+import CelebrationWall from './pages/CelebrationWall';  // ✅ Add this import
 
 export default function App() {
   return (
@@ -35,7 +36,7 @@ export default function App() {
           }
         />
 
-        {/* ✅ Edit Project Route - MUST come BEFORE the detail route */}
+        {/* Edit Project Route */}
         <Route
           path="/projects/:id/edit"
           element={
@@ -45,7 +46,7 @@ export default function App() {
           }
         />
 
-        {/* ✅ Project Detail Route - Protected (only logged-in users) */}
+        {/* Project Detail Route */}
         <Route
           path="/projects/:id"
           element={
@@ -55,10 +56,18 @@ export default function App() {
           }
         />
 
+        {/* ✅ Celebration Wall Route */}
+        <Route
+          path="/celebration"
+          element={
+            <ProtectedRoute>
+              <CelebrationWall />
+            </ProtectedRoute>
+          }
+        />
+
         {/* Default route */}
         <Route path="/" element={<Navigate to="/feed" replace />} />
-
-        {/* Fallback (optional but good practice) */}
         <Route path="*" element={<Navigate to="/feed" replace />} />
       </Routes>
     </Router>
